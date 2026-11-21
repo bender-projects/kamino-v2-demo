@@ -1,24 +1,29 @@
+import argparse
 import re
-import sys
 from collections import Counter
 
+from stopwords import STOPWORDS
 
-def contar(texto):
+
+def contar(texto, ignorar=()):
     palavras = re.findall(r"\w+", texto.lower(), flags=re.UNICODE)
+    palavras = [palavra for palavra in palavras if palavra not in ignorar]
     return dict(Counter(palavras))
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Uso: python3 palavras.py <arquivo>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Conta a frequência de palavras em um arquivo de texto.")
+    parser.add_argument("arquivo", help="Caminho para o arquivo de texto")
+    parser.add_argument("--top", type=int, default=5, help="Quantidade de palavras mais frequentes a exibir (padrão: 5)")
+    parser.add_argument("--sem-stopwords", action="store_true", help="Ignora palavras comuns do português (artigos, preposições, etc.)")
+    args = parser.parse_args()
 
-    caminho = sys.argv[1]
-    with open(caminho, "r", encoding="utf-8") as arquivo:
+    with open(args.arquivo, "r", encoding="utf-8") as arquivo:
         texto = arquivo.read()
 
-    frequencias = contar(texto)
-    mais_frequentes = Counter(frequencias).most_common(5)
+    ignorar = STOPWORDS if args.sem_stopwords else ()
+    frequencias = contar(texto, ignorar=ignorar)
+    mais_frequentes = Counter(frequencias).most_common(args.top)
 
     for palavra, quantidade in mais_frequentes:
         print(f"{palavra}: {quantidade}")
