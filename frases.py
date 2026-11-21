@@ -2,7 +2,8 @@ import re
 
 
 def contar_frases(texto):
-    return len(re.findall(r"[^.!?]*[.!?]", texto))
+    segmentos = re.findall(r"([^.!?]*)[.!?]+", texto)
+    return sum(1 for segmento in segmentos if segmento.strip())
 
 
 def media_palavras(texto):

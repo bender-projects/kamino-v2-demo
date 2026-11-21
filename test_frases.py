@@ -16,6 +16,12 @@ class TestContarFrases(unittest.TestCase):
         resultado = contar_frases("")
         self.assertEqual(resultado, 0)
 
+    def test_pontuacao_repetida_conta_uma_frase(self):
+        self.assertEqual(contar_frases("Que?! Espera... Ok."), 3)
+
+    def test_pontuacao_solta_nao_conta_frase(self):
+        self.assertEqual(contar_frases("Oi. !"), 1)
+
 
 class TestMediaPalavras(unittest.TestCase):
     def test_media_palavras_basica(self):
